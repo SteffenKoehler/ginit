@@ -12,10 +12,23 @@ clear();
 
 console.log(chalk.yellow(figlet.textSync('Ginit', { horizontalLayout: 'full' })));
 
-if (files.directoryExists('.git2')) {
+if (files.directoryExists('.git')) {
   console.log(chalk.red('Already a Git repository!'));
   process.exit();
 }
+
+const getGithubToken = async () => {
+  // Fetch token from config store
+  let token = github.getStoredGithubToken();
+  if(token) {
+    return token;
+  }
+
+  // No token found, use credentials to access GitHub account
+  token = await github.getPersonalAccesToken();
+
+  return token;
+};
 
 const run = async () => {
     try {
@@ -49,18 +62,7 @@ const run = async () => {
     }
   };
 
-const getGithubToken = async () => {
-    // Fetch token from config store
-    let token = github.getStoredGithubToken();
-    if(token) {
-      return token;
-    }
-  
-    // No token found, use credentials to access GitHub account
-    token = await github.getPersonalAccesToken();
-  
-    return token;
-  };
+
   
 
 run();
